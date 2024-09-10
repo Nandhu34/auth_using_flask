@@ -1,12 +1,21 @@
 # views/login_routes.py
 from flask import Blueprint, request, jsonify
 from controllers.authorization_controllers import register_new_user, login_user, forget_password, reset_password, logout, edit_user_details
+from validation.validate_register_new_user import RegisterDetailsValidating,ValidationError
 
 authorization = Blueprint('auth', __name__)
 
 @authorization.route('/register', methods=['POST'])
 def regis_user():
     data = request.json  # or request.form for form data
+    try:
+        user_data = RegisterDetailsValidating(**data)
+        print(user_data)
+        return ({"data":"user registered successfully"}),200
+
+    except ValidationError as e:
+         return jsonify({"errors": e.errors()}), 400
+
     return register_new_user(data)
 
 @authorization.route('/login', methods=['POST'])
