@@ -5,12 +5,12 @@ import bcrypt
 
 def get_access_token(data):
     try :
-        print(" access toekn ")
+        print(" access toekn function ")
         expiration_time = datetime.datetime.utcnow() + datetime.timedelta(days=access_token_exp_time)
         data.update({"exp": expiration_time})
         encode_jwt = jwt.encode(data,secrete,algorithm=token_algorithm)
         print(encode_jwt)
-        # raise ValueError("summa ")
+        raise ValueError("summa ")
         return encode_jwt
     
     except Exception as e:
@@ -19,7 +19,7 @@ def get_access_token(data):
 
 def get_refresh_token(data):
     try :
-        print(" access toekn ")
+        print(" refresh  toekn function ")
         expiration_time = datetime.datetime.utcnow() + datetime.timedelta(days=refresh_token_exp_time)
         data.update({"exp": expiration_time})
         encode_jwt = jwt.encode(data,secrete,algorithm=token_algorithm)

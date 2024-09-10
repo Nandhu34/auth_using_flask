@@ -10,13 +10,20 @@ def regis_user():
     data = request.json  # or request.form for form data
     try:
         user_data = RegisterDetailsValidating(**data)
-        print(user_data)
-        return ({"data":"user registered successfully"}),200
+        user_data = user_data.dict()
+
+        print(user_data,"user dat a")
+        data = register_new_user(user_data)
+        if data['status']== "error":
+            return jsonify({"errors": data['error']}), 400
+            
+        data = data.get_data(as_text=True)
+        
+        return ({"data":f"user registered successfully{str(data)}"}),200
 
     except ValidationError as e:
          return jsonify({"errors": e.errors()}), 400
 
-    return register_new_user(data)
 
 @authorization.route('/login', methods=['POST'])
 def log_in():

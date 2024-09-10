@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr, Field, root_validator,field_validator,
 from datetime import datetime
 from typing import Optional
 from enum import Enum
-from helpers.auth_helpers import get_access_token,get_refresh_token,hash_password
+
 
 class UserRole(str, Enum):
     user = 'user'
@@ -24,6 +24,7 @@ class RegisterDetailsValidating(BaseModel):
     @field_validator('date_of_register')
     def set_date_of_register(cls, value):
         return value or datetime.now().isoformat()
+    
 
     # @validator('mobile_number')
     # def mobile_number_must_be_10_digits(cls, value):
@@ -42,30 +43,32 @@ class RegisterDetailsValidating(BaseModel):
     #     print(raw_data)
     #     return value
 
-    @model_validator(mode='after')
-    def perform_token_operations(self):
-        username = self.username
-        email=self.email
-        mobile_number = self.mobile_number
-        role= self.role
-        raw_data = {"username":username,"email":email,"mobile_number":mobile_number,'role':role}
-        token = get_access_token(raw_data)
-        if token: 
-            self.access_token = token
-        else:
-            self.access_token=""
-            raise ValueError ('access toekn not generated')
+    # @model_validator(mode='after')
+    # def perform_token_operations(self):
+    #     username = self.username
+    #     email=self.email
+    #     mobile_number = self.mobile_number
+    #     role= self.role
+    #     raw_data = {"username":username,"email":email,"mobile_number":mobile_number,'role':role}
+    #     token = get_access_token(raw_data)
+    #     print(" toekn generated ",token)
+    #     if token: 
+    #         self.access_token = token
+    #     else:
+    #         print(" access token errrror ")
+    #         self.access_token=""
+    #         return ({"error":"access token not generated"}),400
         
-        refresh_toekn = get_refresh_token(raw_data)
-        if refresh_toekn:
-            self.refresh_token = refresh_toekn
-        else :
-            self.refresh_token =""
-            raise ValueError ('refresh  toekn not generated')
+    #     refresh_toekn = get_refresh_token(raw_data)
+    #     if refresh_toekn:
+    #         self.refresh_token = refresh_toekn
+    #     else :
+    #         print(" refresh token error ")
+    #         self.refresh_token =""
+    #         return ({"error":"Refresh  token not generated"}),400
       
-        hashed_password = hash_password(self.password)
-        if hashed_password:
-            self.password = hashed_password
-        else:
-            raise ValueError('encoded password error ')
-
+    #     hashed_password = hash_password(self.password)
+    #     if hashed_password:
+    #         self.password = hashed_password
+    #     else:
+    #         return ({"error":"hashing password is not generated"}),400
