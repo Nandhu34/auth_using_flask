@@ -31,44 +31,8 @@ class RegisterDetailsValidating(BaseModel):
     #     if not value.isdigit() or len(value) != 10:
     #         raise ValueError('Mobile number must be exactly 10 digits')
     #     return value
-    
-    # @field_validator('access_token', 'refresh_token',mode='before')
-    # def perform_token_operations(cls, value, values,field):
-    #     username = values.get('username')
-    #     email=values.get('email')
-    #     mobile_number = values.get('mobile_number')
-    #     role= values.get('role')
-    #     raw_data = {"username":username,"email":email,"mobile_number":mobile_number,'role':role}
-    #     token = get_access_token(raw_data)
-    #     print(raw_data)
-    #     return value
+class login_validation (BaseModel):
+    print(" validation ")
+    email:EmailStr
+    password:constr(min_length=6)
 
-    # @model_validator(mode='after')
-    # def perform_token_operations(self):
-    #     username = self.username
-    #     email=self.email
-    #     mobile_number = self.mobile_number
-    #     role= self.role
-    #     raw_data = {"username":username,"email":email,"mobile_number":mobile_number,'role':role}
-    #     token = get_access_token(raw_data)
-    #     print(" toekn generated ",token)
-    #     if token: 
-    #         self.access_token = token
-    #     else:
-    #         print(" access token errrror ")
-    #         self.access_token=""
-    #         return ({"error":"access token not generated"}),400
-        
-    #     refresh_toekn = get_refresh_token(raw_data)
-    #     if refresh_toekn:
-    #         self.refresh_token = refresh_toekn
-    #     else :
-    #         print(" refresh token error ")
-    #         self.refresh_token =""
-    #         return ({"error":"Refresh  token not generated"}),400
-      
-    #     hashed_password = hash_password(self.password)
-    #     if hashed_password:
-    #         self.password = hashed_password
-    #     else:
-    #         return ({"error":"hashing password is not generated"}),400

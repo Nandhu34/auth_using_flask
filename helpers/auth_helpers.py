@@ -36,8 +36,18 @@ def hash_password(data):
         # Hash the password
         hashed_password = bcrypt.hashpw(data.encode(hash_encoder), salt)
         # Return the hashed password as a string
+        print("Hashed Password:", hashed_password.decode(hash_encoder))
         return hashed_password.decode(hash_encoder)
     except Exception as e:
-        # Return False or raise an error if something goes wrong
+        # Handle the error
         print(f"An error occurred while hashing the password: {e}")
+        return False
+
+def decrypt_password(original_password,hashed_password):
+    try:
+        print("Decrypting password (verifying)...")
+        # Compare the plain text password with the hashed password
+        return bcrypt.checkpw(original_password.encode(hash_encoder), hashed_password.encode(hash_encoder))
+    except Exception as e:
+        print(f"An error occurred while verifying the password: {e}")
         return False
