@@ -2,7 +2,7 @@
 from flask import Blueprint, request, jsonify
 from controllers.authorization_controllers import register_new_user, login_user, forget_password, reset_password, logout, edit_user_details
 from validation.validate_register_new_user import RegisterDetailsValidating,ValidationError
-
+from models.check_user_presence import check_user_presnce
 authorization = Blueprint('auth', __name__)
 
 @authorization.route('/register', methods=['POST'])
@@ -14,12 +14,20 @@ def regis_user():
 
         print(user_data,"user dat a")
         data = register_new_user(user_data)
+        print(data )
         if data['status']== "error":
             return jsonify({"errors": data['error']}), 400
-            
-        data = data.get_data(as_text=True)
+        else :
+            response_from_db = check_user_presnce(data['data'])
+            if response_from_db['status']=="error":
+                return ({"data":f"user aldrdy registered try loghin  "}),200
+            else:
+                 return ({"data":response_from_db['data']}),400
+
+        # data = data.get_data(as_text=True)
         
-        return ({"data":f"user registered successfully{str(data)}"}),200
+       
+    
 
     except ValidationError as e:
          return jsonify({"errors": e.errors()}), 400

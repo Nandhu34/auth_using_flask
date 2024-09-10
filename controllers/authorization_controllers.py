@@ -1,6 +1,6 @@
 # controllers/authorization_controllers.py
 from flask import jsonify
-from helpers.db_creation import new_user_collection
+from models.db_creation import new_user_collection
 from helpers.auth_helpers import get_access_token,get_refresh_token,hash_password
 def register_new_user(data):
     # Process data here
@@ -34,7 +34,7 @@ def register_new_user(data):
         return ({"error":"hashing password is not generated","status":"error"})
 
 
-    return jsonify({"status":"success","data": f"Register new user with data {data}"})
+    return ({"status":"success","data": data})
 
 def login_user(data):
     # Process data here

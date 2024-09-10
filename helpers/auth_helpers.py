@@ -10,7 +10,7 @@ def get_access_token(data):
         data.update({"exp": expiration_time})
         encode_jwt = jwt.encode(data,secrete,algorithm=token_algorithm)
         print(encode_jwt)
-        raise ValueError("summa ")
+        
         return encode_jwt
     
     except Exception as e:
@@ -24,6 +24,7 @@ def get_refresh_token(data):
         data.update({"exp": expiration_time})
         encode_jwt = jwt.encode(data,secrete,algorithm=token_algorithm)
         print(encode_jwt)
+        
         return encode_jwt
     except Exception as e:
          return False 
