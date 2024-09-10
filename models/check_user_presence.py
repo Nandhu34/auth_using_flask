@@ -1,5 +1,5 @@
 from .db_creation import new_user_collection
-
+from  datetime import datetime
 def check_user_presnce(data ):
 
     print(data)
@@ -24,7 +24,13 @@ def check_login(data ):
         # print(ins.inserted_id)
         return ({"status":"success","data":"no data found  "})
     else :
-        print(" data not present ")
+        print(" data  present ")
         return ({"status":"error","data":check})
     
+
+
+def update_tokens_while_login(access_token,refresh_toeken, email):
+    new_user_collection.update_one({"email":email},{"$set":{"access_token":access_token,"refresh_token":refresh_toeken,"date_of_last_login":datetime.now().isocalendar()}}) 
+    print(" toekn has been updated ")
+    return True 
 

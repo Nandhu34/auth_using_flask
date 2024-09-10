@@ -2,7 +2,7 @@
 from flask import jsonify
 from models.db_creation import new_user_collection
 from helpers.auth_helpers import get_access_token,get_refresh_token,hash_password,decrypt_password
-from models.check_user_presence import check_user_presnce,check_login
+from models.check_user_presence import check_user_presnce,check_login,update_tokens_while_login
 def register_new_user(data):
     # Process data here
     print(data )
@@ -40,14 +40,32 @@ def register_new_user(data):
 def login_user(data):
     # Process data here
     print(data)
+    original_password = data['password']
+
     res_from_db = check_login(data)
     print(res_from_db)
     if res_from_db['status']=='success':
         print(" no dat afpounds ")
         return ({"status":"error","data":"no account found "})
     else: 
-        if decrypt_password(data['password'],res_from_db['data']['password']):
+
+        data = res_from_db['data']
+        print(original_password,res_from_db['data']['password'])
+        if decrypt_password(original_password,res_from_db['data']['password']):
             print(" true - password matched ")
+            username = data['username']
+            email=data['email']
+            mobile_number = data['mobile_number']
+            role= data['role']
+            raw_data = {"username":username,"email":email,"mobile_number":mobile_number,'role':role}
+            token = get_access_token(raw_data)
+            
+            refresh_toekn = get_refresh_token(raw_data)
+            update_tokens_while_login(token,refresh_toekn,email)
+            
+
+                    
+
             return True 
         else:
             print(" password does not matched")
