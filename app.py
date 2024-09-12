@@ -6,7 +6,7 @@ from flask_jwt_extended import create_access_token, set_access_cookies, get_jwt_
 app.register_blueprint(authorization,url_prefix='/api/auth')
 
 jwt = JWTManager(app)
-
+app.config['SECRET_KEY'] = 'jfdfd'
 
 if __name__ == '__main__':
     app.run(debug=True )
