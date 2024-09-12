@@ -11,10 +11,9 @@ def regis_user():
     try:
         user_data = RegisterDetailsValidating(**data)
         user_data = user_data.dict()
-
-        print(user_data,"user dat a")
+        print(user_data,"user data")
         data = register_new_user(user_data)
-        print(data )
+        print(data)
         if data['status']== "error":
             return jsonify({"errors": data['error']}), 400
         else :

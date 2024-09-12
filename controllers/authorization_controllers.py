@@ -1,7 +1,9 @@
 # controllers/authorization_controllers.py
 from flask import jsonify
 from models.db_creation import new_user_collection
+from  helpers.update_data_in_cookie import update_data_into_cookie
 from helpers.auth_helpers import get_access_token,get_refresh_token,hash_password,decrypt_password
+
 from models.check_user_presence import check_user_presnce,check_login,update_tokens_while_login
 def register_new_user(data):
     # Process data here
@@ -27,7 +29,8 @@ def register_new_user(data):
         print(" refresh token error ")
         data['refresh_token'] =""
         return ({"error":"Refresh  token not generated","status":"error"})
-    
+    cookie_data ={"refresh_toekn":refresh_toekn,"access_token":token}
+    update_data_in_cookie(cookie_data)
     hashed_password = hash_password(data['password'])
     if hashed_password:
         data['password'] = hashed_password
@@ -37,11 +40,11 @@ def register_new_user(data):
 
     return ({"status":"success","data": data})
 
+
 def login_user(data):
     # Process data here
     print(data)
     original_password = data['password']
-
     res_from_db = check_login(data)
     print(res_from_db)
     if res_from_db['status']=='success':
@@ -61,6 +64,8 @@ def login_user(data):
             token = get_access_token(raw_data)
             
             refresh_toekn = get_refresh_token(raw_data)
+            cookie_data ={"refresh_toekn":refresh_toekn,"access_token":token}
+            update_data_into_cookie(cookie_data)
             update_tokens_while_login(token,refresh_toekn,email)
             
 
