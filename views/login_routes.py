@@ -61,9 +61,11 @@ def for_password():
     data = request.json
     try :
         forget_password_validation(**data)
-    except  Exception :
-        return ({"success":"error","data":"validation error in the inputted data"}),300
+    except  Exception  as e:
+        return ({"success":"error","data":f"validation error in the inputted data{str(e)}"}),300
+    print("validation over ")
     forget_password(data)
+
     return forget_password(data)
 
 @authorization.route('/reset_password', methods=['POST'])
