@@ -36,3 +36,7 @@ class login_validation (BaseModel):
     email:EmailStr
     password:constr(min_length=6)
 
+class forget_password_validation (BaseModel):
+    print(" forget password validation ")
+    email:EmailStr
+

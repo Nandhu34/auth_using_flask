@@ -15,10 +15,11 @@ def update_data_into_cookie(data):
     # data = {"sample_key": "sample_value"}  
 
     data_str = json.dumps(data)
-    print(data_str)
+    # print(data_str)
     session['data'] = data
-    print(" session data ")
-    print(session['data'])
+    print(" session data -m access token ")
+    print(session['data']['access_token'])
+    
 
     # resp =make_response(jsonify({"login":True}))
     # get_jwt_identity(resp,data_str)

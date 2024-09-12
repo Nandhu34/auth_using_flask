@@ -30,7 +30,7 @@ def register_new_user(data):
         data['refresh_token'] =""
         return ({"error":"Refresh  token not generated","status":"error"})
     cookie_data ={"refresh_toekn":refresh_toekn,"access_token":token}
-    update_data_in_cookie(cookie_data)
+    # update_data_in_cookie(cookie_data)
     hashed_password = hash_password(data['password'])
     if hashed_password:
         data['password'] = hashed_password
@@ -84,6 +84,10 @@ def login_user(data):
 
 def forget_password(data):
     # Process data here
+    check_user = new_user_collection.find_one({"email":data['email']})
+    if check_user == None :
+        return ({"success":False, "data":"no user found"})
+    
     return jsonify({"data": f"Forget password with data {data}"})
 
 def reset_password(data):
