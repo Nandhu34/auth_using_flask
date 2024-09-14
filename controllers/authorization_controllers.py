@@ -83,12 +83,21 @@ def login_user(data):
     return jsonify({"data": f"Login with data {data}"})
 
 def forget_password(data):
-    from helpers.send_mail_to_email import send_mail
-    return send_mail()
-    return jsonify({"data": f"Forget password with data {data}"})
+    data = new_user_collection.find_one({"email":data['email']})
+    if data !=None :
+        from helpers.send_mail_to_email import send_mail
+        return send_mail(data)
+    else :
+
+
+         return jsonify({"data": f"user id not found  {data}"})
 
 def reset_password(data):
+    print(" reset password ")
+    print(data)
+
     # Process data here
+    
     return jsonify({"data": f"Reset password with data {data}"})
 
 def logout(data):

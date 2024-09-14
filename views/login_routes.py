@@ -3,6 +3,8 @@ from flask import Blueprint, request, jsonify
 from controllers.authorization_controllers import register_new_user, login_user, forget_password, reset_password, logout, edit_user_details
 from validation.validate_register_new_user import RegisterDetailsValidating,ValidationError,login_validation,forget_password_validation
 from models.check_user_presence import check_user_presnce
+from typing_extensions import jwt
+
 authorization = Blueprint('auth', __name__)
 
 @authorization.route('/register', methods=['POST'])
@@ -63,15 +65,20 @@ def for_password():
         forget_password_validation(**data)
     except  Exception  as e:
         return ({"success":"error","data":f"validation error in the inputted data{str(e)}"}),300
+    
     print("validation over ")
     forget_password(data)
 
     return forget_password(data)
 
-@authorization.route('/reset_password', methods=['POST'])
-def reset_pass():
-    data = request.json
-    return reset_password(data)
+@authorization.route('/reset_password/token=<token>', methods=['POST'])
+def reset_pass(token):
+    current_url = request.base_url
+    splitted_data = current_url.split('=')
+    token = splitted_data[1]
+    print(token )
+
+    return reset_password(token)
 
 @authorization.route('/logout', methods=['POST'])
 def logs_out():
@@ -82,3 +89,6 @@ def logs_out():
 def edit_details():
     data = request.json
     return edit_user_details(data)
+
+
+

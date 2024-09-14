@@ -1,12 +1,35 @@
 import jwt
 import datetime 
-from config import token_algorithm,secrete,access_token_exp_time,refresh_token_exp_time,hash_encoder
+from config import token_algorithm,secrete,access_token_exp_time,refresh_token_exp_time,hash_encoder,forget_password_exp_time
 import bcrypt
+from models.db_creation import new_user_collection
+
+
+def generate_forget_password_token(data):
+    try :
+        print(" generating email token ")
+        # print(data['email'])
+        user_data = new_user_collection.find_one({"email":data['email']})
+        print(user_data)
+
+        data ={"email":user_data['email'],"role":user_data['role'], "password":user_data['password']}
+        print(data)
+        expiration_time = datetime.datetime.utcnow() + datetime.timedelta(minutes=forget_password_exp_time)
+        data.update({"exp": expiration_time})
+        encode_jwt = jwt.encode(data,secrete,algorithm=token_algorithm)
+        print(encode_jwt)
+        
+        return encode_jwt
+    
+    except Exception as e:
+         print(e)
+         return False 
+
 
 def get_access_token(data):
     try :
         print(" access toekn function ")
-        expiration_time = datetime.datetime.utcnow() + datetime.timedelta(days=access_token_exp_time)
+        expiration_time = datetime.datetime.utcnow() + datetime.timedelta(hours=access_token_exp_time)
         data.update({"exp": expiration_time})
         encode_jwt = jwt.encode(data,secrete,algorithm=token_algorithm)
         print(encode_jwt)
@@ -52,4 +75,6 @@ def decrypt_password(original_password,hashed_password):
         print(f"An error occurred while verifying the password: {e}")
         return False
     
+# def check_expired(token):
+#     print(token )
 
