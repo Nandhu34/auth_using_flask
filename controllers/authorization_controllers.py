@@ -1,5 +1,5 @@
 # controllers/authorization_controllers.py
-from flask import jsonify
+from flask import jsonify,session
 from models.db_creation import new_user_collection
 from  helpers.update_data_in_cookie import update_data_into_cookie
 from helpers.auth_helpers import get_access_token,get_refresh_token,hash_password,decrypt_password,check_expired,get_token_data
@@ -36,7 +36,8 @@ def register_new_user(data):
     else:
         return ({"error":"hashing password is not generated","status":"error"})
 
-
+    cookie_data ={"refresh_token":refresh_toekn,"access_token":token}
+    update_data_into_cookie(cookie_data)
     return ({"status":"success","data": data})
 
 
@@ -63,7 +64,7 @@ def login_user(data):
             token = get_access_token(raw_data)
             
             refresh_toekn = get_refresh_token(raw_data)
-            cookie_data ={"refresh_toekn":refresh_toekn,"access_token":token}
+            cookie_data ={"refresh_token":refresh_toekn,"access_token":token}
             update_data_into_cookie(cookie_data)
             update_tokens_while_login(token,refresh_toekn,email)
             
@@ -131,7 +132,7 @@ def reset_password(data,new_password):
         
         print(update_status.modified_count)
         if update_status.modified_count==1:
-           cookie_data ={"refresh_toekn":new_refresh_token,"access_token":new_access_token}
+           cookie_data ={"refresh_token":new_refresh_token,"access_token":new_access_token}
            update_data_into_cookie(cookie_data)
            return ({"data":f"new password has been reseted  {update_status.upserted_id}","status":"success"})
     # Process data here
@@ -141,8 +142,10 @@ def reset_password(data,new_password):
     # return jsonify({"data": f"Reset password with data {data}"})
 
 def logout(data):
+    session['logged_in']=False 
+    session[data]=None
     # Process data here
-    
+
     return jsonify({"data": f"Logout with data {data}"})
 
 def edit_user_details(data):
