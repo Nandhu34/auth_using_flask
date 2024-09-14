@@ -75,6 +75,25 @@ def decrypt_password(original_password,hashed_password):
         print(f"An error occurred while verifying the password: {e}")
         return False
     
-# def check_expired(token):
-#     print(token )
+def check_expired(token):
+    try:
+        # Decode the token (will raise an error if expired)
+        jwt.decode(token, secrete, algorithms=[token_algorithm])
+        return False  # Token is valid, not expired
+    except jwt.ExpiredSignatureError:
+        return True  # Token is expired
+    except jwt.InvalidTokenError:
+        return True  # Invalid token, treat as expired
 
+
+def get_token_data(token):
+    try:
+        # Decode the token (will raise an error if expired)
+       return jwt.decode(token, secrete, algorithms=[token_algorithm])
+           # Token is valid, not expired
+    except jwt.ExpiredSignatureError:
+        return True  # Token is expired
+    except jwt.InvalidTokenError:
+        return True  # Invalid token, treat as expired
+
+     
