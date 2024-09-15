@@ -143,7 +143,8 @@ def reset_password(data,new_password):
 
 def logout(data):
     session['logged_in']=False 
-    session[data]=None
+    session['data']=None
+    print(dict(session))
     # Process data here
 
     return jsonify({"data": f"Logout with data {data}"})

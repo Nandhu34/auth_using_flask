@@ -2,7 +2,7 @@ from flask import Flask
 from  flask_cors import CORS 
 from views.login_routes import authorization
 from flask_mail import Mail,Message
-
+from views.product_routes import product
 
 from flask_jwt_extended import create_access_token, set_access_cookies, get_jwt_identity, jwt_required, JWTManager
 
@@ -18,8 +18,14 @@ app.config['MAIL_USE_SSL'] = True
 
 mail = Mail(app) 
 app.register_blueprint(authorization,url_prefix='/api/auth')
+app.register_blueprint(product,url_prefix='/api/v1')
 
-jwt = JWTManager(app)
+# @app.route('/home',methods=['POST'])
+def home_route():
+    
+    return ({"data":"home Route "})
+
+jwt = JWTManager(app) 
 app.config['SECRET_KEY'] = 'jfdfd'
 
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 
 
 from app import mail,Message
+from config import mail_sender
 from helpers.auth_helpers import generate_forget_password_token,new_user_collection
 def send_mail(data):
         try :
@@ -23,7 +24,7 @@ def send_mail(data):
             reset_url = f"http://127.0.0.1:5000/api/auth/reset_password/token={reset_token}"
             msg = Message(
         "Password Reset",
-        sender="@gmail,com",
+        sender=config.mail_sender ,
         recipients=[data['email']]
     )
     # Plain text version
