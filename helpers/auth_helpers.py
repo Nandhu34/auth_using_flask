@@ -23,6 +23,7 @@ def generate_forget_password_token(data):
     
     except Exception as e:
          print(e)
+         print(" exception ")
          return False 
 
 

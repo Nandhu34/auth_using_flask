@@ -27,13 +27,14 @@ mail = Mail(app)
 app.register_blueprint(authorization,url_prefix='/api/auth')
 app.register_blueprint(product,url_prefix='/api/v1')
 
+
 @app.route('/rate_limited_home',methods=['POST'])
 @limiter.limit("2 per minute")
 def rate_limited_home():
     return ({"data":"rate limited route "})
 
 
-
+# middleware 
 @app.errorhandler(429)
 def ratelimit_error(e):
     return jsonify(error="ratelimit exceeded", message=str(e.description)), 429
@@ -49,3 +50,4 @@ app.config['SECRET_KEY'] = 'jfdfd'
 
 if __name__ == '__main__':
     app.run(debug=True )
+    

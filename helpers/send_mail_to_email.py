@@ -24,9 +24,11 @@ def send_mail(data):
             reset_url = f"http://127.0.0.1:5000/api/auth/reset_password/token={reset_token}"
             msg = Message(
         "Password Reset",
-        sender=config.mail_sender ,
+        sender=mail_sender ,
+
         recipients=[data['email']]
     )
+            print(mail_sender,"mail sender ")
     # Plain text version
 
             # msg.body = f"""
@@ -52,4 +54,5 @@ def send_mail(data):
 
             return ({"status":"success","data":"link has been generated kindly reset password in 5 min"})
         except Exception as e:
+              print("exception")
               return ({"status":"error","data":f"{str(e)}"})
