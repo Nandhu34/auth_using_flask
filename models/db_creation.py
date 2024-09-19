@@ -7,3 +7,4 @@ db = connection["auth_using_flask"]
 
 new_user_collection = db["newly_registered_user"]
 
+product_collection = db ['product_details']

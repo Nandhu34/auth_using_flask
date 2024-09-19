@@ -15,20 +15,18 @@ def home_page():
 def product_home_page():
 
     data = request.get_json()
-    # if 'based_on' not  in data:
-        
-    #     abort(403, description="Key 'based_on' is missing") 
+    if 'based_on' not  in data:
+        abort(403, description="Key 'based_on' is missing") 
 
-         
-    
-    #    qwery_option = data['based_on']
     try:
        product_validator.validate_home_product_requests(**data )
-       return ({"data":"try"})
+       
 
     except Exception as e:
             abort(403, description=str(e)) 
-    return data
+
+    return product_controllers.home_controller(data['based_on'])
+    # return data
 
        
     #    return product_controllers.home_controller()
