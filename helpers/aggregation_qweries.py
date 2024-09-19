@@ -1,3 +1,5 @@
+import re 
+
 home_page_discount_based = [
     {
         '$match': {
