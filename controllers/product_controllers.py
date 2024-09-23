@@ -1,5 +1,5 @@
 from flask import request , jsonify , session 
-from models.aggregation_qweries import home_page_discount_based , home_page_actual_price,home_page_mrp_price
+from models.aggregation_qweries import home_page_discount_based , home_page_actual_price,home_page_mrp_price,normal_aggregation
 from  models.db_creation import product_collection
 
 def home_controller(req):
@@ -14,10 +14,10 @@ def home_controller(req):
             data_associated_with_category = each_data['data']
             print(category)
             
-            for each_doc_associated_with_category  in data_associated_with_category:
-                print(each_doc_associated_with_category)
-                each_doc_associated_with_category['_id'] = str(each_doc_associated_with_category['_id'])
-            dynamic_doc_creation[category] = data_associated_with_category
+            # for each_doc_associated_with_category  in data_associated_with_category:
+            #     print(each_doc_associated_with_category)
+            #     each_doc_associated_with_category['_id'] = str(each_doc_associated_with_category['_id'])
+            # dynamic_doc_creation[category] = data_associated_with_category
 
     if req == "actual_price":
         data = list(product_collection.aggregate(home_page_actual_price))
@@ -29,10 +29,10 @@ def home_controller(req):
             data_associated_with_category = each_data['data']
             print(category)
             
-            for each_doc_associated_with_category  in data_associated_with_category:
-                print(each_doc_associated_with_category)
-                each_doc_associated_with_category['_id'] = str(each_doc_associated_with_category['_id'])
-            dynamic_doc_creation[category] = data_associated_with_category
+            # for each_doc_associated_with_category  in data_associated_with_category:
+            #     print(each_doc_associated_with_category)
+            #     each_doc_associated_with_category['_id'] = str(each_doc_associated_with_category['_id'])
+            # dynamic_doc_creation[category] = data_associated_with_category
 
 
     if req =="discount_price":
@@ -45,19 +45,32 @@ def home_controller(req):
             data_associated_with_category = each_data['data']
             print(category)
             
-            for each_doc_associated_with_category  in data_associated_with_category:
-                print(each_doc_associated_with_category)
-                each_doc_associated_with_category['_id'] = str(each_doc_associated_with_category['_id'])
-            dynamic_doc_creation[category] = data_associated_with_category
+            # for each_doc_associated_with_category  in data_associated_with_category:
+            #     print(each_doc_associated_with_category)
+            #     each_doc_associated_with_category['_id'] = str(each_doc_associated_with_category['_id'])
+            # dynamic_doc_creation[category] = data_associated_with_category
 
 
     
 
     else :
-        pass 
+        data = list(product_collection.aggregate(normal_aggregation))
+        # data ="jii"
+        dynamic_doc_creation = {    }
+        for each_data in data :
+            # print(each_data)
+            category = each_data['category']
+            data_associated_with_category = each_data['data']
+            print(category)
+            
+            # for each_doc_associated_with_category  in data_associated_with_category:
+            #     print(each_doc_associated_with_category)
+            #     each_doc_associated_with_category['_id'] = str(each_doc_associated_with_category['_id'])
+            # dynamic_doc_creation[category] = data_associated_with_category
+
 
         # each_data['_id'] = str(each_data['_id'])
-    return ({"data":dynamic_doc_creation})
+    return ({"data":str(data)})
     
 '''
 {
