@@ -132,3 +132,70 @@ home_page_actual_price = [
         '$limit': 20
     }
 ]
+
+normal_aggregation=[
+    {
+        '$addFields': {
+            'mrp_price': {
+                '$convert': {
+                    'input': {
+                        '$replaceAll': {
+                            'input': '$mrp_price', 
+                            'find': '₹', 
+                            'replacement': ''
+                        }
+                    }, 
+                    'to': 'double', 
+                    'onError': 0, 
+                    'onNull': 0
+                }
+            }, 
+            'actual_price': {
+                '$convert': {
+                    'input': {
+                        '$replaceAll': {
+                            'input': '$actual_price', 
+                            'find': '₹', 
+                            'replacement': ''
+                        }
+                    }, 
+                    'to': 'double', 
+                    'onError': 0, 
+                    'onNull': 0
+                }
+            }, 
+            'price_drop': {
+                '$convert': {
+                    'input': {
+                        '$replaceAll': {
+                            'input': {
+                                '$arrayElemAt': [
+                                    {
+                                        '$split': [
+                                            '$price_drop', ' '
+                                        ]
+                                    }, 0
+                                ]
+                            }, 
+                            'find': '%', 
+                            'replacement': ''
+                        }
+                    }, 
+                    'to': 'double', 
+                    'onError': 0, 
+                    'onNull': 0
+                }
+            }
+        }
+    }, {
+        '$project': {
+            'category': '$category', 
+            '_id': 0, 
+            'data': '$$ROOT'
+        }
+    }, {
+        '$sample': {
+            'size': 20
+        }
+    }
+]
