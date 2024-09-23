@@ -56,3 +56,79 @@ home_page_discount_based = [
         }
     }
 ]
+
+home_page_mrp_price = [
+    {
+        '$project': {
+            'price': {
+                '$convert': {
+                    'input': {
+                        '$replaceAll': {
+                            'input': '$mrp_price', 
+                            'find': '₹', 
+                            'replacement': ''
+                        }
+                    }, 
+                    'to': 'double', 
+                    'onError': 0, 
+                    'onNull': 0
+                }
+            }, 
+            'category': '$category', 
+            'total_data': '$$ROOT', 
+            '_id': 0
+        }
+    }, {
+        '$match': {
+            'price': {
+                '$gte': 1500, 
+                '$lte': 3000, 
+                '$ne': 0
+            }
+        }
+    }, {
+        '$sort': {
+            'price': 1
+        }
+    }, {
+        '$limit': 20
+    }
+]
+
+home_page_actual_price = [
+    {
+        '$project': {
+            'price': {
+                '$convert': {
+                    'input': {
+                        '$replaceAll': {
+                            'input': '$actual_price', 
+                            'find': '₹', 
+                            'replacement': ''
+                        }
+                    }, 
+                    'to': 'double', 
+                    'onError': 0, 
+                    'onNull': 0
+                }
+            }, 
+            'category': '$category', 
+            'total_data': '$$ROOT', 
+            '_id': 0
+        }
+    }, {
+        '$match': {
+            'price': {
+                '$gte': 1500, 
+                '$lte': 3000, 
+                '$ne': 0
+            }
+        }
+    }, {
+        '$sort': {
+            'price': 1
+        }
+    }, {
+        '$limit': 20
+    }
+]
