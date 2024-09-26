@@ -199,3 +199,44 @@ normal_aggregation=[
         }
     }
 ]
+
+get_all_category= [
+    {
+        '$group': {
+            '_id': {
+                'category': '$category', 
+                'sub_category': '$sub_category'
+            }, 
+            'inner_category': {
+                '$addToSet': '$inner_category'
+            }
+        }
+    }, {
+        '$group': {
+            '_id': '$_id.category', 
+            'inner_category': {
+                '$addToSet': {
+                    'sub_category': '$_id.sub_category', 
+                    'inner_category': '$inner_category'
+                }
+            }
+        }
+    }, {
+        '$project': {
+            '_id': 0, 
+            'category': '$_id', 
+            'inner_category': {
+                '$arrayToObject': {
+                    '$map': {
+                        'input': '$inner_category', 
+                        'as': 'ic', 
+                        'in': {
+                            'k': '$$ic.sub_category', 
+                            'v': '$$ic.inner_category'
+                        }
+                    }
+                }
+            }
+        }
+    }
+]

@@ -11,6 +11,7 @@ def home_page():
         return jsonify({"data": "I am product page"})
     else:
         return jsonify({"data": "Session expired, please login again"})
+    
 @product.route('/product_home',methods=["GET"])
 def product_home_page():
 
@@ -28,5 +29,14 @@ def product_home_page():
     return product_controllers.home_controller(data['based_on'])
     # return data
 
+@product.route('/get_categorys',methods=['GET'])
+def get_all_category():
+      return product_controllers.get_categories()
+
+
        
     #    return product_controllers.home_controller()
+
+@product.route('/category',methods=['GET'])
+def category():
+     return 

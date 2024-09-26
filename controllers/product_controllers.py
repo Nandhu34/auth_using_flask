@@ -1,5 +1,5 @@
-from flask import request , jsonify , session 
-from models.aggregation_qweries import home_page_discount_based , home_page_actual_price,home_page_mrp_price,normal_aggregation
+from flask import request , jsonify , session , abort
+from models.aggregation_qweries import home_page_discount_based , home_page_actual_price,home_page_mrp_price,normal_aggregation, get_all_category
 from  models.db_creation import product_collection
 
 def home_controller(req):
@@ -71,29 +71,18 @@ def home_controller(req):
 
         # each_data['_id'] = str(each_data['_id'])
     return ({"data":str(data)})
-    
-'''
-{
-  $convert:{
-  price: {
-    $toDouble: {
-      $cond: {
-        if: { $eq: ["$price", ""] },
-        then: "0",
-        else: {
-          $replaceAll: {
-            input: "$actual_price",
-            find: "₹",
-            replacement: "",
-          },
-        },
-      },
-    },
-  },
-},
-  "to":"double",
-  "onError":'0'
-}
-'''
-    
 
+
+
+def get_categories():
+    try :
+      # raise Exception("This is a test error")
+      all_categories = list(product_collection.aggregate(get_all_category))
+      
+      return ({"status":"success","data":all_categories})
+    except Exception as e:
+       return  abort(403, description=str(e)) 
+        
+
+def category():
+    return ({})
