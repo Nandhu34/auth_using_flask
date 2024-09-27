@@ -74,7 +74,7 @@ def home_controller(req):
 
 
 
-def get_categories():
+def category():
     try :
       # raise Exception("This is a test error")
       all_categories = list(product_collection.aggregate(get_all_category))
@@ -84,5 +84,32 @@ def get_categories():
        return  abort(403, description=str(e)) 
         
 
-def category():
-    return ({})
+def get_category(category,sub_category,inner_category,page,limit):
+    qwery ={}
+    start = (page - 1) * limit
+    end = start + limit
+    print(start,end)
+    # skip_limit = {"skip":start}
+    # qwery_limit = {"limit":limit}
+
+
+    if category:
+        if sub_category:
+            if inner_category:
+                qwery={"category":category,"sub_category":sub_category,"inner_category":inner_category}
+            else:
+                qwery={"category":category,"sub_category":sub_category}
+        else:
+            qwery={"category":category}
+    else:
+        qwery={}
+    print(qwery)
+    if qwery =={}:
+        return ({"message":"no data found for selected option"})
+    product_data = list(product_collection.find(qwery).skip(start).limit(limit))
+     
+    if len(product_data)==0:
+        return ({"message":"no data found"})
+    for each_data in product_data:
+        each_data['_id']=str( each_data['_id'])
+    return ({"length":len(product_data),"message":product_data})

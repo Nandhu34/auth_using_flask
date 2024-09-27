@@ -29,14 +29,21 @@ def product_home_page():
     return product_controllers.home_controller(data['based_on'])
     # return data
 
-@product.route('/get_categorys',methods=['GET'])
+@product.route('/categories',methods=['GET'])
 def get_all_category():
-      return product_controllers.get_categories()
+      return product_controllers.category()
 
 
        
     #    return product_controllers.home_controller()
-
-@product.route('/category',methods=['GET'])
+@product.route('/get_categories', methods=['GET'])
 def category():
-     return 
+    category = request.args.get('category')
+    sub_category = request.args.get('sub_category')
+    inner_category = request.args.get('inner_category')
+    page = request.args.get('page', default=1, type=int)
+    limit = request.args.get('limit', default=20, type=int)
+
+    print(category,sub_category,inner_category,page,limit)
+    return    product_controllers.get_category(category,sub_category,inner_category,page,limit)
+    
