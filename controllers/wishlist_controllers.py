@@ -34,3 +34,17 @@ def view_all_wishlist(request_data):
         each_id['_id']= str(each_id['_id'])
 
     return ({"total_document":len(product_details),"data":product_details})
+
+
+def delete_wishlist(product_id):
+    # product_id = arg_data.get('product_id')
+    print(product_id)
+    product_exists = db_creation.product_collection.find_one({"_id":ObjectId(product_id)})
+    if not product_exists :
+        return ({"success":False ,"message":f"{product_id} doesnot found  from wishlist"})
+
+    upd = db_creation.product_collection.update_one({"_id":ObjectId(product_id),"wishlist_users":session['email']},{"$pull":{"wishlist_users":session['email']}})
+    if upd.matched_count ==1 :
+        return ({"success":True ,"message":f"{product_id} un subscribed from wishlist"})
+    else:
+        return ({"success":True ,"message":f"{product_id}  not added in wishlist"})
