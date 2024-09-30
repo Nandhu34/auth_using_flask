@@ -36,7 +36,7 @@ def register_new_user(data):
     else:
         return ({"error":"hashing password is not generated","status":"error"})
 
-    cookie_data ={"refresh_token":refresh_toekn,"access_token":token}
+    cookie_data ={"refresh_token":refresh_toekn,"access_token":token,"email":email}
     update_data_into_cookie(cookie_data)
     return ({"status":"success","data": data})
 
@@ -64,7 +64,7 @@ def login_user(data):
             token = get_access_token(raw_data)
             
             refresh_toekn = get_refresh_token(raw_data)
-            cookie_data ={"refresh_token":refresh_toekn,"access_token":token}
+            cookie_data ={"refresh_token":refresh_toekn,"access_token":token,"email":email}
             update_data_into_cookie(cookie_data)
             update_tokens_while_login(token,refresh_toekn,email)
             
@@ -132,7 +132,7 @@ def reset_password(data,new_password):
         
         print(update_status.modified_count)
         if update_status.modified_count==1:
-           cookie_data ={"refresh_token":new_refresh_token,"access_token":new_access_token}
+           cookie_data ={"refresh_token":new_refresh_token,"access_token":new_access_token,"email":token_decode['email']}
            update_data_into_cookie(cookie_data)
            return ({"data":f"new password has been reseted  {update_status.upserted_id}","status":"success"})
     # Process data here
@@ -144,6 +144,8 @@ def reset_password(data,new_password):
 def logout(data):
     session['logged_in']=False 
     session['data']=None
+    session['email'] = None 
+
     print(dict(session))
     # Process data here
 
@@ -182,10 +184,13 @@ def edit_user_details(data):
         return ({"status":"error","message":"password not matched "}) 
 
 def view_details():
-    
-    qwery={"access_token":session['data']['access_token']}
-    print(qwery)
-    # return ({"data":"hihihi"})
-    user_data = new_user_collection.find_one(qwery)
-    user_data['_id']= str(user_data['_id'])
-    return ({"status":"success","data":user_data})
+    try :
+        print(session['email'])
+        qwery={"access_token":session['data']['access_token']}
+        print(qwery)
+        # return ({"data":"hihihi"})
+        user_data = new_user_collection.find_one(qwery)
+        user_data['_id']= str(user_data['_id'])
+        return ({"status":"success","data":user_data})
+    except Exception as e:
+        return ({"status":"error","data":str(e)})

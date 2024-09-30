@@ -2,6 +2,7 @@ from flask import Flask ,jsonify
 from  flask_cors import CORS 
 from views.login_routes import authorization 
 from views.product_routes import product
+from views.wishlist_routes import wishlist
 from flask_mail import Mail,Message
 # from views.product_routes import product
 from flask_limiter import Limiter
@@ -27,6 +28,7 @@ app.config['MAIL_USE_SSL'] = True
 mail = Mail(app) 
 app.register_blueprint(authorization,url_prefix='/api/auth')
 app.register_blueprint(product,url_prefix='/api/v1')
+app.register_blueprint(wishlist, url_prefix='/api/v1/wishlist')
 
 
 
@@ -49,7 +51,7 @@ def ratelimit_error(e):
 
 
 def home_route():
-
+    
     return ({"data":"home Route "})
 
 jwt = JWTManager(app) 
@@ -57,4 +59,5 @@ app.config['SECRET_KEY'] = 'jfdfd'
 
 if __name__ == '__main__':
     app.run(debug=True )
+
     

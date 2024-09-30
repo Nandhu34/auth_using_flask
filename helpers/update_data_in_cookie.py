@@ -18,6 +18,7 @@ def update_data_into_cookie(data):
     # print(data_str)
     session['logged_in']=True
     session['data'] = data
+    session['email']= data['email']
     print(" session data -m access token ")
     print(session['data']['access_token'])
     
