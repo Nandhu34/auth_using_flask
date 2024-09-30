@@ -151,6 +151,7 @@ def logout(data):
 
 def edit_user_details(data):
     # Process data here
+    
     user_enetered_password = data['password']
     print(session['data'])
     access_token = session['data']['access_token']

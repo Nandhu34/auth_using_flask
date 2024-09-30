@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field, root_validator,field_validator, constr ,model_validator, ValidationError
+from pydantic import BaseModel, EmailStr, Field, root_validator,field_validator, constr ,model_validator, ValidationError,StringConstraints
 from datetime import datetime
 from typing import Optional
 from enum import Enum
@@ -50,3 +50,35 @@ class forget_password_validation (BaseModel):
     print(" forget password validation ")
     email:EmailStr
 
+
+
+class UserProfileUpdate(BaseModel):
+    username: Optional[str]  # Optional for flexibility
+    email: Optional[EmailStr]
+    mobile_number: Optional[str]  # Ensure mobile number is 10 digits
+    password: str  # Password is mandatory
+    pincode: Optional[str]  # Ensure pincode is 6 digits
+    address: Optional[str]
+
+
+    @field_validator('mobile_number')
+    def validate_mobile_number(cls, v):
+        if v and not v.isdigit() or len(v) != 10:
+            raise ValueError('Mobile number must be a 10-digit number.')
+        return v
+    
+    @field_validator('pincode')
+    def validate_pincode(cls, v):
+        if v and not v.isdigit() or len(v) != 6:
+            raise ValueError('Pincode must be a 6-digit number.')
+        return v
+
+
+    @model_validator(mode='before')
+    def check_at_least_one_field(cls, values):
+        # Extract values
+        username, email, mobile_number, pincode, address = values.get('username'), values.get('email'), values.get('mobile_number'), values.get('pincode'), values.get('address')
+        
+        if not any([username, email, mobile_number, pincode, address]):
+            raise ValueError('At least one of username, email, mobile_number, pincode, or address must be present.')
+        return values
