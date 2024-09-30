@@ -151,7 +151,7 @@ def logout(data):
 
 def edit_user_details(data):
     # Process data here
-    
+
     user_enetered_password = data['password']
     print(session['data'])
     access_token = session['data']['access_token']
@@ -180,4 +180,12 @@ def edit_user_details(data):
     else:
         print(" password npot matched ")
         return ({"status":"error","message":"password not matched "}) 
+
+def view_details():
     
+    qwery={"access_token":session['data']['access_token']}
+    print(qwery)
+    # return ({"data":"hihihi"})
+    user_data = new_user_collection.find_one(qwery)
+    user_data['_id']= str(user_data['_id'])
+    return ({"status":"success","data":user_data})

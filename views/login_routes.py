@@ -1,6 +1,6 @@
 # views/login_routes.py
 from flask import Blueprint, request, jsonify , redirect ,url_for
-from controllers.authorization_controllers import register_new_user, login_user, forget_password, reset_password, logout, edit_user_details
+from controllers.authorization_controllers import register_new_user, login_user, forget_password, reset_password, logout, edit_user_details,view_details
 from validation.validate_register_new_user import RegisterDetailsValidating,ValidationError,login_validation,forget_password_validation,UserProfileUpdate
 from models.check_user_presence import check_user_presnce
 
@@ -109,4 +109,10 @@ def edit_details():
     except Exception as e:
         return({" status":"error","message":str(e)})
     return edit_user_details(data)
+
+
+
+@authorization.route('/view_details',methods = ['GET'])
+def view_user_details():
+    return view_details()
 
