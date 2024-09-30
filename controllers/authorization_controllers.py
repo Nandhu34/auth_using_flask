@@ -94,8 +94,8 @@ def forget_password(data):
 
 def reset_password(data,new_password):
     hashed_password = hash_password(new_password)
-    # print(" printing hashing password ")
-    # print(data)
+    print(" printing hashing password ")
+    print("token ",data)
     
     
     # check_token = new_user_collection.find_one({"reset_password_token":data,"email":hashed_password['email']})
@@ -104,7 +104,7 @@ def reset_password(data,new_password):
     # check_token_used = new_user_collection.find_one({"reset_password_token":data,"reset_password_token_expire":True,"email":hash_password['email']})
     # if check_token_used :
     #     return ({"status":"error","data":"token has been used aldredy "})
-    print(" reset password ")
+    # print(" reset password ")
 
     print(data)
     result_from_token_expired = check_expired(data)
@@ -128,7 +128,7 @@ def reset_password(data,new_password):
         payload_token  = {"username":data_from_db['username'],"email":data_from_db['email'],"mobile_number":data_from_db['mobile_number'],'role':data_from_db['role']}
         new_refresh_token = get_refresh_token(payload_token)
         new_access_token = get_access_token(payload_token)
-        update_status = new_user_collection.update_one({"email":token_decode['email']},{"$set":{"reset_password_token_expire":True,"access_token":new_access_token,"refresh_token":new_refresh_token}})
+        update_status = new_user_collection.update_one({"email":token_decode['email']},{"$set":{"reset_password_token_expire":True,"access_token":new_access_token,"refresh_token":new_refresh_token,"password":hashed_password}})
         
         print(update_status.modified_count)
         if update_status.modified_count==1:
@@ -151,4 +151,32 @@ def logout(data):
 
 def edit_user_details(data):
     # Process data here
-    return jsonify({"data": f"Edit user details with data {data}"})
+    user_enetered_password = data['password']
+    print(session['data'])
+    access_token = session['data']['access_token']
+    
+    user_data = new_user_collection.find_one({"access_token":access_token})
+    print(user_data)
+    db_password  = user_data['password']
+    result_from_password_comparison= decrypt_password(user_enetered_password,db_password)
+    print(result_from_password_comparison, "res from password ")
+    if  result_from_password_comparison :
+
+        
+        # print(data )
+        data.pop('password',None )
+
+        print(data )
+        find_qwery = {"access_token":access_token}
+        update_qwery = {"$set":data}
+        print(find_qwery,update_qwery)
+        update_user_data = new_user_collection.update_one(find_qwery,update_qwery)  
+        if update_user_data.modified_count ==1 :
+              return jsonify({"data": f"Edit user details with data {data}"})
+        else:
+            return ({"status":"not_updated","message":"no new data has been updated.. all you priovided data is old data  "})
+         
+    else:
+        print(" password npot matched ")
+        return ({"status":"error","message":"password not matched "}) 
+    

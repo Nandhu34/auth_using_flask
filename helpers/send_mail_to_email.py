@@ -5,7 +5,7 @@ from config import mail_sender
 from helpers.auth_helpers import generate_forget_password_token,new_user_collection
 def send_mail(data):
         try :
-            # print(data)
+            print(data)
             # from auth_helpers import new_user_collection
             reset_token = generate_forget_password_token(data)
             print({"email":data['email']})

@@ -98,10 +98,11 @@ def logs_out():
     data = request.json
     return logout(data)
 
-@authorization.route('/edit_user_details', methods=['POST'])
+
+
+
+@authorization.route('/update_profile',methods = ['PUT'])
 def edit_details():
     data = request.json
     return edit_user_details(data)
-
-
 

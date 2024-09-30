@@ -46,4 +46,20 @@ def category():
 
     print(category,sub_category,inner_category,page,limit)
     return    product_controllers.get_category(category,sub_category,inner_category,page,limit)
-    
+
+@product.route('/get_filter',methods=['GET'])
+def get_filter():
+    category = request.args.get('category')
+    sub_category = request.args.get('sub_category')
+    inner_category = request.args.get('inner_category')
+    return product_controllers.get_filter
+
+@product.route('/product',methods=['GET'])
+def get_product_details():
+     product_id = request.args.get('product_id')
+     if product_id == None or product_id == '' :
+          return ({"error":"please enter correct product-Id"})
+     return product_controllers.get_specific_product(product_id)
+
+     
+     

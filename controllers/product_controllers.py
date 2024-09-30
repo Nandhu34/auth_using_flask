@@ -1,7 +1,7 @@
 from flask import request , jsonify , session , abort
-from models.aggregation_qweries import home_page_discount_based , home_page_actual_price,home_page_mrp_price,normal_aggregation, get_all_category
+from models.aggregation_qweries import home_page_discount_based , home_page_actual_price,home_page_mrp_price,normal_aggregation, get_all_category,get_filter_by_all_category
 from  models.db_creation import product_collection
-
+from bson import ObjectId
 def home_controller(req):
     if req == "discount": 
         
@@ -113,3 +113,32 @@ def get_category(category,sub_category,inner_category,page,limit):
     for each_data in product_data:
         each_data['_id']=str( each_data['_id'])
     return ({"length":len(product_data),"message":product_data})
+
+
+def get_filter(category,sub_category, inner_category):
+
+    qwery={}
+
+    if category:
+        if sub_category :
+            if inner_category:
+                get_filter_by_all_category
+            else:
+                qwery={}
+        else : 
+            qwery={}
+    else :
+        qwery={}
+
+def get_specific_product(product_id):
+    try :
+        product_data = product_collection.find_one({"_id":ObjectId(product_id)})
+        if not product_data :
+            return ({"error":"something went wrong ! try later"})
+        else :
+            product_data['_id']= str(product_data['_id'])
+        return ({"data":product_data})
+
+    except Exception as e:
+        print(e)
+        return ({"error":str(e)})

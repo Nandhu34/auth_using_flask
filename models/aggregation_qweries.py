@@ -240,3 +240,23 @@ get_all_category= [
         }
     }
 ]
+
+
+
+get_filter_by_all_category =[
+    {
+        '$match': {
+            'category': 'kitchen, garden & pets', 
+            'sub_category': 'electronics & devices ', 
+            'inner_category': 'audio & accessories'
+        }
+    }, {
+        '$group': {
+            '_id': 'null', 
+            'brand_name': {
+                '$addToSet': '$brand_name'
+            }
+        }
+    }
+]
+
