@@ -13,4 +13,5 @@ def add_a_new_data_wishlist(item_id):
 
 @wishlist.route('/view_wishlist',methods=['GET'])
 def view_wishlist():
-    return wishlist_controllers.view_all_wishlist()
+    print(request.args)
+    return wishlist_controllers.view_all_wishlist(request.args)

@@ -21,12 +21,16 @@ def add_to_wishlist(data ):
   return ({"status": "error", "message": "Product not found."})
 
 
-def view_all_wishlist(data):
+def view_all_wishlist(request_data):
+    page_no = request_data.get('page')
+    limit = 5
+    start = (int(page_no)-1)*limit
+    limit = start +limit
 
-    product_details =list( db_creation.product_collection.find({"wishlist_users":session['email']}))
+    product_details =list( db_creation.product_collection.find({"wishlist_users":session['email']}).skip(start).limit(limit))
     if product_details  ==[]:
         return({"status":"success","data":"no product added in wishlist for this user"})
     for each_id in product_details:
         each_id['_id']= str(each_id['_id'])
 
-    return ({"success":"true","data":product_details})
+    return ({"total_document":len(product_details),"data":product_details})
