@@ -69,3 +69,8 @@ def delete_wishlist(product_id):
         return ({"success":True ,"message":f"{product_id} un subscribed from wishlist"})
     else:
         return ({"success":True ,"message":f"{product_id}  not added in wishlist"})
+    
+
+
+
+    

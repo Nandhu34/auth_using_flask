@@ -1,5 +1,5 @@
 from flask import Blueprint , session ,request , jsonify,abort 
-from controllers import wishlist_controllers
+from controllers import cart_contollers
 from validation import wishlist_validator
 
 
@@ -13,7 +13,7 @@ def add_to_cart():
     product_id = request_data['product_id']
     quantity = request_data['quantity']
     print(product_id,quantity)
-    return ({"data":"add to cart"})
+    return cart_contollers.add_to_cart(product_id,quantity)
 
 
 @cart.route('/view',methods=['GET'])
