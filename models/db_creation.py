@@ -10,4 +10,7 @@ new_user_collection = db["newly_registered_user"]
 product_collection = db ['product_details']
 
 
-wishlist_collection = db['product_wishlist']
+wishlist_collection = db['wishlist']
+
+
+cart_collection = db['cart']

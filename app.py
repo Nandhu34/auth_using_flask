@@ -3,6 +3,7 @@ from  flask_cors import CORS
 from views.login_routes import authorization 
 from views.product_routes import product
 from views.wishlist_routes import wishlist
+from views.cart_routes import cart 
 from flask_mail import Mail,Message
 # from views.product_routes import product
 from flask_limiter import Limiter
@@ -29,7 +30,7 @@ mail = Mail(app)
 app.register_blueprint(authorization,url_prefix='/api/auth')
 app.register_blueprint(product,url_prefix='/api/v1')
 app.register_blueprint(wishlist, url_prefix='/api/v1/wishlist')
-
+app.register_blueprint(cart,url_prefix='/api/v1/cart')
 
 
 @app.route('/rate_limited_home',methods=['POST'])
@@ -51,7 +52,7 @@ def ratelimit_error(e):
 
 
 def home_route():
-    
+
     return ({"data":"home Route "})
 
 jwt = JWTManager(app) 
