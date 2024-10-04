@@ -37,9 +37,9 @@ def add_to_wishlist(data ):
 
 def view_all_wishlist(request_data):
     page_no = request_data.get('page')
-    limit = 10
-    start = (int(page_no)-1)*limit
-    limit = start +limit
+    limits = 10
+    start = (int(page_no)-1)*limits
+    limit = start +limits
 
     product_details =list( db_creation.wishlist_collection.find({"email":session['email']}))
     print(product_details)

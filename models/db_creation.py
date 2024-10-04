@@ -14,3 +14,5 @@ wishlist_collection = db['wishlist']
 
 
 cart_collection = db['cart']
+
+secondary_cart_collection = db['secondary_cart']

@@ -18,12 +18,30 @@ def add_to_cart():
 
 @cart.route('/view',methods=['GET'])
 def view_cart():
-    return ({"data":"view_cart"})
+    page_no = request.args.get('page_no')
+    return cart_contollers.view_cart(page_no)
+
 
 @cart.route('/update_cart', methods=['PUT'])
 def update_cart():
-    return ({"data":"update cart "})
+    quantity = request.json
+    
+    try :
+        quan = quantity['quantity']
+        prod_id = quantity['product_id']
+    except Exception as e:
+        print(e)
+        return ({"success":False,"data":str(e)})
+
+    return cart_contollers.update_cart(quan, prod_id)
 
 @cart.route('/remove_cart', methods=['DELETE'])
 def delete_cart():
-    return ({"data":"delete cart "})
+    body = request.json 
+
+    try:
+        product_id = body['product_id']
+    except Exception as e:
+        return ({"success":False ,"warning":str(e)})
+    
+    return cart_contollers.delete_cart(product_id)
