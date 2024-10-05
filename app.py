@@ -4,6 +4,7 @@ from views.login_routes import authorization
 from views.product_routes import product
 from views.wishlist_routes import wishlist
 from views.cart_routes import cart 
+from views.order_management import order
 from flask_mail import Mail,Message
 # from views.product_routes import product
 from flask_limiter import Limiter
@@ -31,7 +32,7 @@ app.register_blueprint(authorization,url_prefix='/api/auth')
 app.register_blueprint(product,url_prefix='/api/v1')
 app.register_blueprint(wishlist, url_prefix='/api/v1/wishlist')
 app.register_blueprint(cart,url_prefix='/api/v1/cart')
-
+app.register_blueprint(order, url_prefix='/api/v1/orders')
 
 @app.route('/rate_limited_home',methods=['POST'])
 @limiter.limit("2 per minute")

@@ -175,7 +175,9 @@ def edit_user_details(data):
         print(find_qwery,update_qwery)
         update_user_data = new_user_collection.update_one(find_qwery,update_qwery)  
         if update_user_data.modified_count ==1 :
+              session['email'] = data['email']
               return jsonify({"data": f"Edit user details with data {data}"})
+              
         else:
             return ({"status":"not_updated","message":"no new data has been updated.. all you priovided data is old data  "})
          

@@ -19,6 +19,9 @@ def add_to_cart():
 @cart.route('/view',methods=['GET'])
 def view_cart():
     page_no = request.args.get('page_no')
+    if page_no =='' or page_no ==0:
+        page_no =1
+        
     return cart_contollers.view_cart(page_no)
 
 

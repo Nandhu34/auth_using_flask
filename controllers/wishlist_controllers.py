@@ -37,12 +37,15 @@ def add_to_wishlist(data ):
 
 def view_all_wishlist(request_data):
     page_no = request_data.get('page')
+    print(page_no)
+    print(session['email'])
     limits = 10
     start = (int(page_no)-1)*limits
     limit = start +limits
 
     product_details =list( db_creation.wishlist_collection.find({"email":session['email']}))
     print(product_details)
+
     wishlist_id = product_details[0]['wishlist_product']
     print(wishlist_id)
     qwery={'_id':{'$in':wishlist_id}}

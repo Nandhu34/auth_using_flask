@@ -14,6 +14,7 @@ def add_a_new_data_wishlist(item_id):
 @wishlist.route('/view_wishlist',methods=['GET'])
 def view_wishlist():
     print(request.args)
+    
     return wishlist_controllers.view_all_wishlist(request.args)
 
 
@@ -25,3 +26,6 @@ def view_wishlist():
 def delete_wishlist(item_id):
     # print(request.args)
     return wishlist_controllers.delete_wishlist(item_id)
+
+
+
