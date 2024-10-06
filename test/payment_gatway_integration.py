@@ -16,7 +16,7 @@
 # print(payment)
 
 import stripe
-stripe.api_key = "sk_test_51Q6AImP3SbJ6TZaO5WUnvcqMyg3gvD6xEhIAUc4IlVSuNWZukveRJKYHL57ogBamy4uPXvm8RqDQZ5C1XycMVAoL00OzuQkNtj"
+stripe.api_key = ""
 
 payment_intent = stripe.PaymentIntent.create(
   amount=500,
