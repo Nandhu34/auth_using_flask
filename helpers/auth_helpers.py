@@ -89,12 +89,18 @@ def check_expired(token):
 
 def get_token_data(token):
     try:
+        print(" get token dat ")
         # Decode the token (will raise an error if expired)
-       return jwt.decode(token, secrete, algorithms=[token_algorithm])
+        print(token)
+        data = jwt.decode(token, secrete, algorithms=[token_algorithm])
+        print(data)
+        return data
            # Token is valid, not expired
     except jwt.ExpiredSignatureError:
+        print(" expirted ")
         return True  # Token is expired
     except jwt.InvalidTokenError:
+        print(" invalid ")
         return True  # Invalid token, treat as expired
 
      

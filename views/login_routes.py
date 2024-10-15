@@ -116,3 +116,5 @@ def edit_details():
 def view_user_details():
     return view_details()
 
+
+# @authorization.route('/view_all_user')

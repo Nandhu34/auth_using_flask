@@ -1,13 +1,13 @@
 from flask import Blueprint , session ,request , jsonify,abort 
 from controllers import cart_contollers
 from validation import wishlist_validator
-
-
-
+# from app  import check_token_and_role
+from login_role_middleware import check_token_and_role
 cart = Blueprint('cart',__name__)
 
 
 @cart.route('/add',methods=['POST'])
+@check_token_and_role([ 'admin'])
 def add_to_cart():
     request_data  = request.json
     product_id = request_data['product_id']
@@ -48,3 +48,16 @@ def delete_cart():
         return ({"success":False ,"warning":str(e)})
     
     return cart_contollers.delete_cart(product_id)
+
+
+
+# def apply_role_decorator(role, routes):
+#     for route in routes :
+#         route_decorated = check_token_and_role(role)(route)
+#         print(route, route_decorated)
+#         app.add_url_rule(route, view_func=route_decorated)
+# apply_role_decorator(['admin'], [add_to_cart, update_cart, delete_cart])
+# apply_role_decorator(['user', 'admin'], [view_cart])
+
+
+

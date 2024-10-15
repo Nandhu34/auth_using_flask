@@ -1,5 +1,9 @@
-from flask import Flask ,jsonify
+from flask import Flask ,jsonify, request
 from  flask_cors import CORS 
+from functools import wraps
+from helpers import auth_helpers
+from login_role_middleware import check_token_and_role
+
 from views.login_routes import authorization 
 from views.product_routes import product
 from views.wishlist_routes import wishlist
@@ -41,8 +45,11 @@ app.register_blueprint(search,url_prefix='/api/v1')
 app.register_blueprint(support,url_prefix='/api/v1/customer_support')
 app.register_blueprint(review,url_prefix='/api/v1/review')
 
+
 @app.route('/rate_limited_home',methods=['POST'])
-@limiter.limit("2 per minute")
+@limiter.limit("4 per minute")
+@check_token_and_role(['admin', 'user'])
+
 def rate_limited_home():
     return ({"data":"rate limited route "})
 
@@ -66,7 +73,13 @@ def home_route():
 jwt = JWTManager(app) 
 app.config['SECRET_KEY'] = 'jfdfd'
 
+
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True )
 
-    
+
