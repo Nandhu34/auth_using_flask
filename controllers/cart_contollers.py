@@ -2,7 +2,7 @@ from flask import session
 # from controllers import cart_contollers
 from models import db_creation
 from bson import ObjectId
-
+from helpers  import paggination
 
 
 
@@ -83,4 +83,138 @@ def delete_cart(product_id):
         return ({"success":False ,"message":f"{product_id} not found"})
     
 
-    
+def view_all_cart_by_user(page_no):
+        start , end = paggination.pagination_setup(page_no)
+        aggregate_qwery = [
+    {
+        '$group': {
+            '_id': '$email', 
+            'cart_id': {
+                '$first': '$cart_id'
+            }, 
+            'total_product_id': {
+                '$addToSet': {
+                    'product_id': {
+                        '$toObjectId': '$product_id'
+                    }, 
+                    'quantity': '$quantity'
+                }
+            }
+        }
+    }, {
+        '$unwind': {
+            'path': '$total_product_id'
+        }
+    }, {
+        '$lookup': {
+            'from': 'product_details', 
+            'localField': 'total_product_id.product_id', 
+            'foreignField': '_id', 
+            'as': 'data'
+        }
+    }, {
+        '$unwind': {
+            'path': '$data'
+        }
+    }, {
+        '$addFields': {
+            'data._id': {
+                '$toString': '$data._id'
+            }
+        }
+    }, {
+        '$replaceRoot': {
+            'newRoot': {
+                '_id': '$_id', 
+                'cart_id': '$cart_id', 
+                'product_id': {
+                    '$toString': '$total_product_id.product_id'
+                }, 
+                'quantity': '$total_product_id.quantity', 
+                'data': '$data'
+            }
+        }
+    }, {
+        '$skip': start
+    }, {
+        '$limit': end
+    }
+]    
+        print(aggregate_qwery)
+        aggregate_result = list(db_creation.secondary_cart_collection.aggregate(aggregate_qwery))
+        print(aggregate_result)
+        if aggregate_result ==0 :
+            return ({"status":False,"warning":"no data found from any user"})
+        else:
+            return ({"success":True ,"message":aggregate_result})
+
+        
+
+
+def view_all_cart_by_product(page_no):
+    start,end = paggination.pagination_setup(page_no)
+    aggregation_qwery_to_get_all_products = [
+    {
+        '$group': {
+            '_id': {
+                '$toObjectId': '$product_id'
+            }, 
+            'cart_id': {
+                '$first': '$cart_id'
+            }, 
+            'total_email': {
+                '$addToSet': {
+                    'email': '$email', 
+                    'quantity': '$quantity'
+                }
+            }
+        }
+    }, {
+        '$unwind': {
+            'path': '$total_email'
+        }
+    }, {
+        '$lookup': {
+            'from': 'product_details', 
+            'localField': '_id', 
+            'foreignField': '_id', 
+            'as': 'data'
+        }
+    }, {
+        '$unwind': {
+            'path': '$data'
+        }
+    }, {
+        '$addFields': {
+            '_id': {
+                '$toString': '$_id'
+            }, 
+            'data._id': {
+                '$toString': '$data._id'
+            }
+        }
+    }, {
+        '$replaceRoot': {
+            'newRoot': {
+                '_id': '$_id', 
+                'cart_id': '$cart_id', 
+                'email': '$total_email.email', 
+                'quantity': '$total_email.quantity', 
+                'data': '$data'
+            }
+        }
+    }, {
+        '$skip': start
+    }, {
+        '$limit': end
+    }
+]
+    all_products_detail = list (db_creation.product_review_collection.aggregate(aggregation_qwery_to_get_all_products))
+    if len(all_products_detail) ==0 :
+        
+            return ({"status":False,"warning":"no data found from any user"})
+    else:
+            print(len(all_products_detail))
+            return ({"success":True ,"message":all_products_detail})
+
+        

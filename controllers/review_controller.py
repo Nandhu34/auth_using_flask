@@ -128,8 +128,18 @@ def delete_all_review_user(user_email):
               return ({"success":True ,"message":"all review from this user has been deleted"})
 
 
-def delete_all_review_product():
-     return 
+def delete_all_review_product(product_id ):
+     qwery = {"product_id":product_id}
+     check_review_presence  = db_creation.product_review_collection.count_documents({"product_id":product_id})
+     if check_review_presence >0 :
+          return ({"success":False ,"warning":"no product fount with this id"})
+     else:
+          del_data = db_creation.product_review_collection.delete_many(qwery)
+          if del_data.deleted_count >0:
+               return ({"success":True ,"message":f"product id {product_id} deleted successfully "})
+          else :
+               return ({"success":False ,"warning":"no data deleted ! please try again later "})
+     
 
 
 def like_an_review(review_id):

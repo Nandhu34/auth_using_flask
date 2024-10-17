@@ -196,3 +196,16 @@ def view_details():
         return ({"status":"success","data":user_data})
     except Exception as e:
         return ({"status":"error","data":str(e)})
+
+
+
+def view_all_user_details(page_no ):
+    limit = 5
+    start = (int(page_no)-1)*limit 
+    end = start +limit 
+
+    user_details = list(new_user_collection.find({}).skip(start).limit(end))
+    for each_user in user_details:
+        each_user['_id']= str(each_user['_id'])
+    print(user_details)
+    return ({"success":True ,"length":len(user_details), "data":user_details})

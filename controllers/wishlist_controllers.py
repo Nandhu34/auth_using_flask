@@ -1,6 +1,8 @@
 from  flask import session
 from models import db_creation 
 from bson import ObjectId
+from helpers import paggination
+
 
 def add_to_wishlist(data ):
   #data = product id 
@@ -76,4 +78,94 @@ def delete_wishlist(product_id):
 
 
 
+def view_all_wishlist_user(page_no):
+        limit = 5
+        start = (int(page_no) -1)*limit
+        end = start + limit 
+        new_doc={}
+        all_docs=[]
+        user_data =list( db_creation.wishlist_collection.find({}))
+        for each_data in user_data:
+            print(each_data)
+            product_id_in_user = each_data['wishlist_product']
+            product_details_per_user =  list(db_creation.product_collection.find({"_id":{"$in":product_id_in_user}}))
+            for each_doc in product_details_per_user:
+                each_doc['_id'] = str(each_doc['_id'])
+            new_doc['email']= each_data['email']
+
+            new_doc ['product_data'] = product_details_per_user
+            all_docs.append(new_doc)
+
+        print(new_doc)
+        return ({"success":True ,"data":all_docs})
+
+
+def view_all_wishlist_product(page_no ):
+      start ,end = paggination.pagination_setup(page_no)
+      qwery = [
+    {
+        '$unwind': {
+            'path': '$wishlist_product'
+        }
+    }, {
+        '$lookup': {
+            'from': 'product_details', 
+            'localField': 'wishlist_product', 
+            'foreignField': '_id', 
+            'as': 'result'
+        }
+    }, {
+        '$project': {
+            'email': 1, 
+            'result': {
+                '$arrayElemAt': [
+                    '$result', 0
+                ]
+            }
+        }
+    }, {
+        '$skip': start
+    }, {
+        '$limit': end 
+    }
+
+]     
+      print(start,end)
+      product_data =  list(db_creation.wishlist_collection.aggregate(qwery))
+      print(product_data)
+      return ({"success":True , "data":str(product_data)})
+
+      '''
+      {
+        "$project": {
+            "email": 1,  # Include the email field from wishlist
+            "first_product": {"$arrayElemAt": ["$product_data", 0]},  # Get the first product
+            "_id": {"$toString": "$_id"},  # Convert the _id of the wishlist to string
+            "product_data": {
+                "$map": {
+                    "input": "$product_data",
+                    "as": "product",
+                    "in": {
+                        "$mergeObjects": [
+                            {"_id": {"$toString": "$$product._id"}},  # Convert product _id to string
+                            {"$arrayToObject": {"$map": {
+                                "input": {"$objectToArray": "$$product"},
+                                "as": "field",
+                                "in": {
+                                    "k": "$$field.k",  # Keep the original key
+                                    "v": {"$cond": {
+                                        "if": {"$eq": ["$$field.k", "_id"]},
+                                        "then": {"$toString": "$$field.v"},
+                                        "else": "$$field.v"
+                                    }}
+                                }
+                            }}}
+                        ]
+                    }
+                }
+            }
+        }
+    }
     
+    '''
+            

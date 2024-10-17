@@ -84,9 +84,10 @@ def delete_all_review_user():
 
 
 
-# @review.route('/delete_all_review_product', methods=['DELETE'])
-# def delete_all_review_product():
-#     return review_controller.delete_all_review()
+@review.route('/delete_all_review_product', methods=['DELETE'])
+def delete_all_review_product():
+    product_id = request.args.get('product_id')
+    return review_controller.delete_all_review_product(product_id)
 
 
 @review.route('/like_an_review', methods=['POST'])

@@ -37,7 +37,7 @@ def  view_all_customer_support():
         return ({"success":True ,"data":check_user_existance['support_request']})
 
 def view_specific_customer_support(support_id):
-    agg_qwery=[
+    aggregate_to_specific_consumer_support=[
     {
         '$match': {
             'email': session['email']
@@ -59,7 +59,7 @@ def view_specific_customer_support(support_id):
         }
     }
 ]
-    check_data = list(db_creation.customer_support_collection.aggregate(agg_qwery))
+    check_data = list(db_creation.customer_support_collection.aggregate(aggregate_to_specific_consumer_support))
     if len(check_data)==0:
         return ({"success":False,"message":"no data found"})
     else:

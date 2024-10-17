@@ -7,7 +7,7 @@ cart = Blueprint('cart',__name__)
 
 
 @cart.route('/add',methods=['POST'])
-@check_token_and_role([ 'admin'])
+@check_token_and_role([ 'user','admin'])
 def add_to_cart():
     request_data  = request.json
     product_id = request_data['product_id']
@@ -50,6 +50,17 @@ def delete_cart():
     return cart_contollers.delete_cart(product_id)
 
 
+@cart.route('/view_all_cart_by_user', methods=['GET'])
+def view_all_by_user():
+    page_no = request.args.get('page_no')
+    return cart_contollers.view_all_cart_by_user(page_no)
+    
+@cart.route('/view_all_cart_by_product', methods=['GET'])
+def view_all_cart_products():
+    page_no = request.args.get('page_no')
+    return  cart_contollers.view_all_cart_by_product(page_no)
+
+# get  if same product id also if has diff user name then we will  provide different doc 
 
 # def apply_role_decorator(role, routes):
 #     for route in routes :
@@ -58,6 +69,8 @@ def delete_cart():
 #         app.add_url_rule(route, view_func=route_decorated)
 # apply_role_decorator(['admin'], [add_to_cart, update_cart, delete_cart])
 # apply_role_decorator(['user', 'admin'], [view_cart])
+
+
 
 
 

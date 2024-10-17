@@ -18,10 +18,6 @@ def view_wishlist():
     return wishlist_controllers.view_all_wishlist(request.args)
 
 
-
-
-
-
 @wishlist.route('/delete_wishlist/<string:item_id>',methods=['DELETE'])
 def delete_wishlist(item_id):
     # print(request.args)
@@ -29,3 +25,13 @@ def delete_wishlist(item_id):
 
 
 
+
+@wishlist.route('/view_all_user_wishlist',methods=['GET'])
+def view_all_wishlist():
+    page_no = request.args.get('page_no')
+    return wishlist_controllers.view_all_wishlist_user(page_no)
+
+@wishlist.route('/view_all_wishlished_product', methods=['GET'])
+def view_all_wishlist_product():
+    page_no = request.args.get('page_no')
+    return wishlist_controllers.view_all_wishlist_product(page_no)
