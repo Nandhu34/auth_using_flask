@@ -3,11 +3,12 @@ from flask import session
 from models import db_creation
 from bson import ObjectId
 from helpers  import paggination
-
+import uuid 
 
 
 def add_to_cart(product_id, quantity):
-    old_quantity = 10 
+    # old_quantity = 10 
+    # from ..helpers import paggination
     if quantity ==0 :
         quantity = 1
     #check product collection 
@@ -18,23 +19,35 @@ def add_to_cart(product_id, quantity):
     check_user_presence = db_creation.new_user_collection.find_one({"email":session['email']})
     if check_user_presence == None :
         return ({"status":"success","data":"no user  has been registered"})
-    check_user_presence_in_primary_collection = db_creation.cart_collection.find_one({"email":session['email']})
-    if check_user_presence_in_primary_collection == None :
-        new_data_in_primary_collection = db_creation.cart_collection.insert_one({"email":session['email']})
-        cart_id = new_data_in_primary_collection.inserted_id
-        # print(cart_id)
-        # return ({"new data ":str(cart_id)})
-    else:
-        existance_data_in_primary_collection = db_creation.cart_collection.find_one({"email":session['email']})
-        cart_id = str(existance_data_in_primary_collection['_id'])
-        # return ({"old data":cart_id})
-    print(session['email'])
+    cart_id = uuid.uuid4()
     check_product_existance_in_secondary_collection = db_creation.secondary_cart_collection.find_one({"email":session['email'],"cart_id":cart_id, "product_id":product_id})
     print(check_product_existance_in_secondary_collection)
     if check_product_existance_in_secondary_collection == None :
-        new_data= {"email":session['email'], "cart_id":cart_id,"product_id":product_id,"quantity":quantity}
-        db_creation.secondary_cart_collection.insert_one(new_data)
-        return ({"status":True ,"message":f"product {product_id} with quantity {quantity} inserted into new doc"})
+        quantity_in_db = paggination.check_product_quantity_fun(product_id,quantity)
+        print(" quan in db ",quantity_in_db)
+        if quantity_in_db >0:
+            print(quantity, quantity_in_db)
+            print(int(quantity) > quantity_in_db)
+            if int(quantity)>quantity_in_db:
+                mismatch = int(quantity)-quantity_in_db
+                print(mismatch)
+
+                 
+                new_data= {"email":session['email'], "cart_id":cart_id,"product_id":product_id,"product_quantity":quantity}
+
+                db_creation.secondary_cart_collection.insert_one(new_data)
+                db_creation.product_collection.update_one({"_id":ObjectId(product_id)},{"$set":{"product_quantity":0}})
+                return ({"status":True ,"message":f"product {product_id} with quantity {quantity} added in cart remaining {mismatch} stock will notify when product available"})
+            else :
+                remaining = quantity_in_db - int(quantity)
+
+                new_data= {"email":session['email'], "cart_id":cart_id,"product_id":product_id,"product_quantity":quantity}
+
+                db_creation.secondary_cart_collection.insert_one(new_data)
+                db_creation.product_collection.update_one({"_id":ObjectId(product_id)},{"$set":{"product_quantity":remaining}})
+                return ({"status":True ,"message":f"product {product_id} with quantity {quantity} inserted into new doc"})
+        else:
+             return ({"message":"no quantity available"})    
     else:
         return ({"status":True, "message":"product aldredy in cart"})
         db_creation.secondary_cart_collection.update_one({"email":session['email'],"cart_id":cart_id,"product_id":product_id},{"$set":{"quantity":quantity}})
@@ -217,4 +230,43 @@ def view_all_cart_by_product(page_no):
             print(len(all_products_detail))
             return ({"success":True ,"message":all_products_detail})
 
-        
+
+def delete_all_user_cart(email):
+     check_user_data_presence = db_creation.secondary_cart_collection.find_one({"email":email})
+     if check_user_data_presence == None :
+          return ({"status":False ,"warning":"no data found in user"})
+     else:
+          delete_user = db_creation.secondary_cart_collection.delete_many({"email":email})
+          deleted_count = delete_user.deleted_count
+          if deleted_count>0:
+               return ({"success":True ,"message":f'cart item with count {deleted_count}'})
+          else:
+               return ({"success":False ,"message":"no cart item found from this email"})
+          
+
+def delete_all_product_cart(product_id):
+     print(product_id)
+     check_product_available_in_product = db_creation.secondary_cart_collection.find_one({"product_id":product_id})
+     if check_product_available_in_product == None : 
+          return ({"success":False,"warning":f"no product {product_id}available in cart page "})
+     delete_product = db_creation.secondary_cart_collection.delete_many({"product_id":product_id})
+     if delete_product.deleted_count>0:
+          return ({"success":True ,"message":f"product id {product_id} has been removed from cart"})
+     else:
+          return ({"success":False,"warning":f"domething went wrong try again later!"})
+     
+
+def   check_product_quantity(product_id, current_quantity ):
+     
+    db_quantity = db_creation.product_collection.find_one({"_id":ObjectId(product_id)}, {"product_quantity":1,'_id':0})
+    db_quantity = db_quantity['product_quantity']
+    print(db_quantity)
+
+    if int(current_quantity) > db_quantity:
+         return ({"status":False  , "warning":f"not available products to place order-out of stock {db_quantity-int(current_quantity)}"})
+    else :
+         return ({"status":True ,"message":f"{db_quantity-int(current_quantity)} availabe "})
+    
+
+def update_cart_quantity(product_id,product_quantity):
+     return ({})

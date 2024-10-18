@@ -60,6 +60,32 @@ def view_all_cart_products():
     page_no = request.args.get('page_no')
     return  cart_contollers.view_all_cart_by_product(page_no)
 
+
+@cart.route('/delete_all_user_cart', methods=['DELETE'])
+def delete_all_user_cart():
+    user_email = request.json.get('user_email')
+    print(user_email)
+    return cart_contollers.delete_all_user_cart(user_email)
+
+
+@cart.route('/delete_all_user_product', methods=['DELETE'])
+def delete_all_product_cart():
+    product_id = request.json.get('product_id')
+    return cart_contollers.delete_all_product_cart(product_id)
+
+
+@cart.route('/check_product_quantity',methods =['GET'])
+def check_product_quantity():
+    product_id = request.json.get('product_id')
+    current_quantity = request.json.get('current_quantity')
+    return cart_contollers.check_product_quantity(product_id, current_quantity)
+
+@cart.route('/update_cart_quantity', methods =["PUT"])
+def update_cart_quantity():
+    product_id = request.json.get('product_id')
+    product_quantity= request.json.get('product_quantity')
+    return update_cart_quantity(product_id,product_quantity)
+
 # get  if same product id also if has diff user name then we will  provide different doc 
 
 # def apply_role_decorator(role, routes):
